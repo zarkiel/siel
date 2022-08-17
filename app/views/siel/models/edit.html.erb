@@ -1,0 +1,81 @@
+<script>
+$(function(){
+	$('#formEditModel').niftyOverlay();
+	$('#formEditModel').submit(function(e){
+        e.preventDefault();
+        $(this).sendForm('/siel/models/edit', function(r){
+            switch(parseInt(r[0])){
+                case 1:
+                    zk.pageAlert({message: 'Controller created successfully!', title: 'Success', icon: 'check', type: 'success'});
+                    window.location = '/siel/models';
+                break;
+                
+                case 0:
+                    $('#modal').modal('hide');
+                    zk.pageAlert({message: 'Sorry we can\'t complete the request.', title: 'Request Failed', icon: 'bolt', type: 'danger'});
+                break;
+                
+                case -1:
+                    if(confirm('The model already exists. Do you want delete it?')){
+                        zk.sendData('/siel/models/delete', {name: $('#name').val()}, function(ss){
+                            switch (parseInt(ss[0])) {
+                                case 1:
+                                    $('#formEditModel').trigger('submit');
+                                break;
+
+                                case 0:
+                                    $('#modal').modal('hide');
+                                    zk.pageAlert({message: 'Sorry we can\'t complete the request.', title: 'Request Failed', icon: 'bolt', type: 'danger'});
+                                break;
+                            }
+                        });
+                    }
+                break;
+
+            }
+        });
+    });
+});
+</script>
+
+<div class="modal-content">
+    <form action="" class="form-horizontal" id="formEditModel" data-target="#formEditModel" data-toggle="overlay">
+        <div class="modal-header">
+            <h4 class="modal-title">Edit Model</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group form-group-sm">
+                <label class="col-sm-4 control-label" for="">Primary Key</label>
+                <div class="col-sm-4 col-lg-2"><input type="text" id="pk" name="pk" value="<%=@model.getPrimaryKey%>" class="form-control" required /></div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="col-sm-4 control-label" for="">Name</label>
+                <div class="col-sm-6 col-lg-4"><input type="text" id="name" name="name" value="<%=@model.getClassName%>" class="form-control" disabled /></div>
+            </div>
+      		<div class="form-group form-group-sm">
+      		    <label class="col-sm-4 control-label" for="">Table Name</label>
+      		    <div class="col-sm-6 col-lg-4"><input type="text" name="table_name" value="<%=@model.getTableName%>" class="form-control" required /></div>
+      		</div>
+      		<div class="form-group form-group-sm">
+      		    <label class="col-sm-4 control-label" for="">Connection</label>
+      		    <div class="col-sm-6 col-lg-4">
+      		    	<select name="connection" class="form-control">
+						<option value="">-- Default --</option>
+						<% @connections.each do |name, connection| %>
+						<option value="<%=name %>" <%=name == @model.getConnection ? 'selected' : '' %>><%=name.downcase.capitalize %></option>
+						<% end %>
+					</select>
+      		    </div>
+      		</div>
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn btn-default" data-dismiss="modal" type="button" onclick="window.history.back(-1)">Cancel</button>
+            <button class="btn btn-primary" type="submit">Edit Model</button>
+        </div>
+
+        <input type="hidden" name="name" value="<%=@model.getClassName.downcase%>" />
+			<input type="hidden" name="model" value="<%=@model.serialize%>" />
+
+    </form>
+</div>

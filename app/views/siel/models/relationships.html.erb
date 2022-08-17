@@ -1,0 +1,114 @@
+
+<script>
+$(function(){
+	$('#formRelationships').niftyOverlay();
+	$('#formRelationships').submit(function(e){
+        e.preventDefault();
+        $(this).sendForm('/siel/models/relationships', function(r){
+            switch(parseInt(r[0])){
+                case 1:
+                    zk.pageAlert({message: 'Model edited successfully!', title: 'Success', icon: 'check', type: 'success'});
+                    window.location = '/siel/models';
+                break;
+                
+                case 0:
+                    zk.pageAlert({message: 'Sorry we can\'t complete the request.', title: 'Request Failed', icon: 'bolt', type: 'danger'});
+                break;
+                
+               
+            }
+        });
+    });
+
+	$('body').on('change', 'select[name ^= "relations"]', function(){
+		relation_name = $(this).parent().prev().find('input[type="text"]');
+		//if(relation_name.val() == ''){
+		if($(this).val() != '')
+			relation_name.val(this.value.toLowerCase());
+		//}
+	});
+});
+
+function addRelationship(type){
+	data = '<tr class="form-group-sm">' +
+		'<td class="center">'+
+			'<input type="text" name="relations['+type+'][name][]" value="" class="form-control" required>' + 
+		'</td>' +
+		'<td class="center">'+
+			'<select name="relations['+type+'][model][]" class="form-control">'+
+			'<option value="">-- Model --</option>' +
+			<% @models.each do |model| %>
+				<% if model.isActiveRecordModel %>
+					'<option value="<%=model.getClassName %>"><%=model.getClassName %></option>'+
+				<% end %>
+			<% end %>
+			'</select>'+
+		'</td>'+
+		'<td class="center"><input type="text" name="relations['+type+'][foreign_key][]" class="form-control"></td>'+
+		'<td class="center"><button type="button" class="btn btn-danger" onclick="$(this).parent().parent().remove()"><i class="fa fa-trash"></i></button></td>'+
+	'</tr>';
+	
+	
+	$('#' + type + '_list').append(data);
+}
+</script>
+
+<div class="modal-content">
+    <form action="" class="form-horizontal" id="formRelationships" data-target="#formRelationships" data-toggle="overlay">
+        <div class="modal-header">
+            <h4 class="modal-title">Relationships - <%=@model.getClassName %></h4>
+        </div>
+        <div class="modal-body">
+            <% @relationships.each do |relationship| %>
+		<p>
+		<h4><%=relationship.to_s.gsub('_', ' ').capitalize %></h4>
+		
+		<table class="special">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Model</th>
+					<th>Foreign Key</th>
+					<th class="center" style="width: 55px"><button type="button" class="btn btn-default" onclick="addRelationship('<%=relationship %>')"><i class="fa fa-plus"></i></button></th>
+				</tr>
+			</thead>
+			<tbody id="<%=relationship %>_list">
+			<% relations = @model.getRelations(relationship) %>
+			
+			<% relations.each do |relation| %>
+				<tr class="form-group-sm">
+					<td class="center">
+						<input type="hidden" name="relations[<%=relationship %>][options][]" value="<%=relation.options %>" />
+						<input type="text" name="relations[<%=relationship %>][name][]" value="<%=relation.name %>" class="form-control" required>
+					</td>
+					<td class="center">
+						<select name="relations[<%=relationship %>][model][]" class="form-control">
+						<% @models.each do |model| %>
+							<% if model.isActiveRecordModel %>
+								<% selected = relation.klass.to_s == model.getClassName ? true : false %>
+								<option value="<%=model.getClassName %>" <%=selected ? 'selected' : '' %>><%=model.getClassName %></option>
+							<% end %>
+						<% end %>
+						</select>
+					</td>
+					<td class="center"><input type="text" name="relations[<%=relationship %>][foreign_key][]" value="<%=relation.foreign_key %>" class="form-control"></td>
+					<td class="center"><button type="button" class="btn btn-danger" onclick="$(this).parent().parent().remove()"><i class="fa fa-trash"></i></button></td>
+				</tr>
+			<% end %>
+			</tbody>
+		</table><br />
+		</p>
+		
+		<% end %>
+
+		<input type="hidden" name="model" value="<%=@model.serialize %>" />
+
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn btn-default" data-dismiss="modal" type="button" onclick="window.history.back(-1)">Cancel</button>
+            <button class="btn btn-primary" type="submit">Save Relationships</button>
+        </div>
+    </form>
+</div>
+

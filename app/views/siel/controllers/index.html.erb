@@ -1,0 +1,59 @@
+<script>
+function deleteController(name){
+	if(confirm('Are you sure to delete this controller?\nIt will also delete the controller views.')){
+		zk.sendData('/siel/controllers/delete', {name: name}, function(ss){
+			switch(parseInt(ss[0])){
+				case 1:
+					zk.pageAlert({message: 'Controller successfully deleted!', title: 'Success', icon: 'check', type: 'success'});
+					window.location = '/siel/controllers';
+                    
+				break;
+				
+				case 0:
+					zk.pageAlert({message: 'Sorry we can\'t delete the controller.', title: 'Request Failed', icon: 'bolt', type: 'danger'});
+				break;
+			}
+		});
+	}
+}
+</script>
+
+<div class="panel">
+	<div class="panel-heading">
+		<h3 class="panel-title">Your Project Controllers</h3>
+	</div>
+	<div class="panel-body">
+		<div class="pad-btm form-inline">
+			<div class="row">
+				<div class="col-sm-6 table-toolbar-left">
+					<a href="/siel/controllers/create" class="btn btn-success btn-labeled fa fa-plus">Create Controller</a>
+				</div>
+			</div>
+		</div>
+		<% if @controllers.length > 0 %>
+		<div class="table-responsive">
+			<table class="table table-striped table-bordered special">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @controllers.each do |controller| %>
+					<tr>
+						<td><b><%=controller.capitalize%></b></td>
+						<td class="text-center" style="width: 120px">
+							<button class="btn btn-danger btn-labeled fa fa-trash" onclick="deleteController('<%=controller%>')">Delete</button>
+						</td>
+					</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+		<% else %>
+		<div class="text-center">YOU DON'T HAVE ANY CONTROLLER</div>
+		<% end %>
+		
+	</div>
+</div>

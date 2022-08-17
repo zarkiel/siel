@@ -1,0 +1,138 @@
+<script>
+    $(function () {
+        $('#formCreateController').niftyOverlay();
+        $('#type').bind('change', function () {
+            if ($(this).val() == 1) {
+                $('#type_1').show();
+                $('.type_2').hide();
+                $('.type_2').find('select').removeClass('required');
+            } else {
+                $('.type_2').show();
+                $('.type_2').find('select').addClass('required');
+                $('#type_1').hide();
+            }
+        });
+        
+        $('#type').trigger('change');
+        $('#formCreateController').submit(function(e){
+            e.preventDefault();
+            $(this).sendForm('/siel/controllers/create', function(r){
+                //$(_form).data('bootstrapValidator').disableSubmitButtons(false);
+                switch(parseInt(r[0])){
+                    case 1:
+                        //$.fancybox.close();
+                        zk.pageAlert({message: 'Controller created successfully!', title: 'Success', icon: 'check', type: 'success'});
+                        window.location = '/siel/controllers';
+                        //zk.reloadPage();
+                    break;
+                    
+                    case 0:
+                        $('#modal').modal('hide');
+                        zk.pageAlert({message: 'Sorry we can\'t complete the request.', title: 'Request Failed', icon: 'bolt', type: 'danger'});
+                    break;
+                    
+                    case -1:
+                        if(confirm('The controller already exists. Do you want delete it?')){
+                            zk.sendData('/siel/controllers/delete', {name: $('#name').val()}, function(ss){
+                                switch (parseInt(ss[0])) {
+                                    case 1:
+                                        $('#formCreateController').trigger('submit');
+                                    break;
+
+                                    case 0:
+                                        $('#modal').modal('hide');
+                                        zk.pageAlert({message: 'Sorry we can\'t complete the request.', title: 'Request Failed', icon: 'bolt', type: 'danger'});
+                                    break;
+                                }
+                            });
+                        }
+                    break;
+
+                    case -5:
+                        zk.formErrors($('#formCreateController'), r.errors);
+                    break;
+
+                    case -2:
+                        $('#modal').modal('hide');
+                        zk.pageAlert({message: 'Controllers directory doesn\'t exists.', title: 'Request Failed', icon: 'bolt', type: 'danger'});
+                    break;
+
+                    case -4:
+                        $('#modal').modal('hide');
+                        zk.pageAlert({message: 'Invalid Scaffold.', title: 'Request Failed', icon: 'bolt', type: 'danger'});
+                    break;
+                    
+                    default:
+                        
+                    break;
+                }
+            });
+        });
+    });
+</script>
+
+<div class="modal-content">
+    <form action="" class="form-horizontal" id="formCreateController" data-target="#formCreateController" data-toggle="overlay">
+        <div class="modal-header">
+            
+            <h4 class="modal-title">Create Controller</h4>
+        </div>
+        <div class="modal-body">
+            <div class="form-group form-group-sm">
+                <label class="col-sm-4 control-label" for="">Name</label>
+                <div class="col-sm-6 col-lg-4"><input type="text" id="name" name="name" class="form-control" required /></div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="col-sm-4 control-label" for="">Type</label>
+                <div class="col-sm-4 col-lg-2">
+                    <select name="type" id="type" class="form-control">
+                        <option value="1">Empty Controller</option>
+                        <option value="2">Scaffold</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group form-group-sm" id="type_1">
+                <label class="col-sm-4 control-label" for="">Actions</label>
+                <div class="col-sm-6  col-lg-4">
+                    <textarea class="form-control" rows="5" name="methods" style="height: 70px"></textarea>
+                    <small class="help-block">* Separate the actions with a comma.</small>
+                </div>
+            </div>
+            <div class="form-group form-group-sm type_2">
+                <label class="col-sm-4 control-label" for="">Model</label>
+                <div class="col-sm-4  col-lg-2">
+                    <select name="model" class="form-control">
+                        <option value="">-- Select --</option>
+                        <% @models.each do |model| %>
+                            <% if model.isActiveRecordModel %>
+                            <option value="<%=model.getClassName %>"><%=model.getClassName %></option>
+                            <% end %>
+                        <% end %>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group form-group-sm type_2">
+                <label class="col-sm-4 control-label" for="">Scaffold</label>
+                <div class="col-sm-4  col-lg-2">
+                    <select name="scaffold" class="form-control">
+                        <option value="">-- Select --</option>
+                        <% @scaffoldsDirectory.each do |directory| %>
+                            <% if File.exist? directory %>
+                                <% Dir.foreach(directory) do |s| %>
+                                    <% next if s == '.' or s == '..' %>
+                                    <option value="<%=directory + '/' + s.strip %>"><%=s.strip %></option>
+                                <% end %>
+                            <% end %>
+                        <% end %>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn btn-default" data-dismiss="modal" type="button" onclick="window.history.back(-1)">Cancel</button>
+            <button class="btn btn-primary" type="submit">Create Controller</button>
+        </div>
+    </form>
+</div>
+

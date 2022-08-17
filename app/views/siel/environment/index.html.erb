@@ -1,0 +1,25 @@
+
+<% @params.each do |key, val| %>
+<div class="panel">
+	<div class="panel-heading">
+		<h3 class="panel-title">Request <%=key.capitalize %> Parameters</h3>
+	</div>
+	<div class="panel-body">
+		
+		<table class="special">
+		<% val = val.to_hash unless val.is_a? Array %>
+		<% if val.length > 0 %>
+			<% val.each do |name, valor| %>
+			<tr>
+				<th style="width: 30%"><%=name %></th><td><%=valor %></td>
+			</tr>
+			<% end %>
+		<% else %>
+			<i>No <%=key.capitalize%> Parameters</i>
+		<% end %>
+		</table>
+		
+	</div>
+</div>
+<% end %>
+

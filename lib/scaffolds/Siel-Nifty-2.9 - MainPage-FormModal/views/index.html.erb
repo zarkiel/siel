@@ -1,0 +1,93 @@
+<script>
+$(function(){
+	setMenuActive('<%=all_var%>')
+	$('#lista<%=all_var.titleize.gsub(/ +/, "")%>').dataTable()
+});
+
+function borrar<%=model_var.titleize.gsub(/ +/, "") %>(id){
+	zk.confirm('¿Está seguro de borrar los datos?', function(){
+		zk.sendData('/<%=all_var%>/borrar', {id: id}, function(r){
+			switch(r.code){
+				case 1:
+					zk.pageAlert({message: 'Datos borrados correctamente.', title: 'Operación Exitosa', icon: 'check', type: 'success', container: 'floating'});
+					zk.reloadPage()
+				break;
+				
+				case 0:
+					let message = "No se pudieron borrar los datos";
+					if(r.errors){
+						message += "<br />El registro tiene elementos asociados."
+					}
+					zk.pageAlert({message: message, title: 'Operación Fallida', icon: 'bolt', type: 'danger', container: 'floating'});
+				break;
+
+			}
+		})
+	})
+}
+</script>
+
+<div id="page-head">
+	<div id="page-title">
+		<h1 class="page-header text-overflow"><%=all_var.titleize%></h1>
+	</div>
+	<ol class="breadcrumb">
+		<li><a href="/"><i class="demo-pli-home"></i></a></li>
+		<li><a href="javascript:;" onclick="history.back(-1)"><%=all_var.titleize%></a></li>
+		<li class="active">Lista de <%=all_var.titleize%></li>
+	</ol>
+</div>
+
+<!--Page content-->
+<!--===================================================-->
+<div id="page-content">
+
+	<!--===================================================-->
+	<div class="panel">
+		<div class="panel-heading">
+			<h3 class="panel-title">Lista de <%=all_var.titleize%></h3>
+		</div>
+		<div class="panel-body">
+			<div class="pad-btm form-inline">
+				<div class="row">
+					<div class="col-sm-6 table-toolbar-left">
+						<a href="javascript:;" onclick="fancybox('/<%=all_var%>/form')" class="btn btn-success btn-labeled fa fa-plus">Registrar Nuevo</a>
+					</div>
+				</div>
+			</div>
+			<table id="lista<%=all_var.titleize.gsub(/ +/, "")%>" class="table table-striped table-bordered" cellspacing="0" width="100%">
+				<thead>
+					<tr><% object.attributes.each do |key, val| next if ['id', 'created_at', 'updated_at'].include? key %>
+						<th><%=key.titleize%></th><% end %>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+				<%='<' %>% @<%=all_var%>.each do |<%=model_var %>| %>
+					<tr><% object.attributes.each do |key, val| next if ['id', 'created_at', 'updated_at'].include? key %>
+						<td><%='<' %>%=<%=model_var %>.<%=key %>%></td><% end %>
+						
+
+						<td class="text-center menu-lista">
+							<div class="btn-group">
+								<div class="dropup">
+									<button class="btn btn-default btn-active-primary dropdown-toggle" data-toggle="dropdown" type="button">
+										Opciones <i class="caret"></i>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-right">
+										<li><a href="javascript:;" onclick="fancybox('/<%=all_var%>/form/<%='<' %>%=sha1(<%=model_var %>.id)%>')"><%='<' %>%=icon 'register'%> Editar <%=model_var.titleize %></a></li>
+										<li><a href="javascript:;" onclick="borrar<%=model_var.titleize.gsub(/ +/, "") %>('<%='<' %>%=sha1(<%=model_var %>.id)%>')"><%='<' %>%=icon 'delete'%> Borrar <%=model_var.titleize %></a></li>
+									</ul>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<%='<' %>% end %<%='>' %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<!--===================================================-->
+	<!-- End Striped Table -->
+</div>
+

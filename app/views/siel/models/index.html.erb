@@ -1,0 +1,148 @@
+
+<script>
+function deleteModel(name){
+	if(confirm('Are you sure to delete this model?')){
+		zk.sendData('/siel/models/delete', {name: name}, function(ss){
+			switch(parseInt(ss[0])){
+				case 1:
+					zk.pageAlert({message: 'Model successfully deleted!', title: 'Success', icon: 'check', type: 'success'});
+					window.location = '/siel/models';
+                    
+				break;
+				
+				case 0:
+					zk.pageAlert({message: 'Sorry we can\'t delete the model.', title: 'Request Failed', icon: 'bolt', type: 'danger'});
+				break;
+			}
+		});
+	}
+}
+</script>
+<div class="panel">
+	<div class="panel-heading">
+		<h3 class="panel-title">Your Project Models</h3>
+	</div>
+	<div class="panel-body">
+		<div class="pad-btm form-inline">
+			<div class="row">
+				<div class="col-sm-6 table-toolbar-left">
+					<a href="/siel/models/create" class="btn btn-success btn-labeled fa fa-plus">Create Model</a>
+				</div>
+			</div>
+		</div>
+		<% if @models.length > 0 %>
+		<div class="table-responsive">
+			<table class="table table-striped table-bordered special">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Table Name</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @models.each do |model| %>
+					<tr>
+						<td><strong><%=model.getClassName.capitalize%></strong></td>
+						<td class="text-center"><%=model.isActiveRecordModel ? model.getTableName : '-'%></td>
+						<td class="text-center" style="width: 460px">
+							<% if model.editable? %>
+							<a href="/siel/models/relationships/<%=model.getName%>" class="btn btn-mint btn-labeled fa fa-code-fork" title="View Model Relationships">Relationships</a>
+							<!--<a class="btn btn-primary btn-labeled fa fa-info" title="View Model Details" onclick="deleteController('<%=controller%>')">Details</a>-->
+							<!--<a href="/siel/models/edit/<%=model.getName%>" class="btn btn-info btn-labeled fa fa-pencil" title="Edit Model">Edit</a>-->
+							<button class="btn btn-danger btn-labeled fa fa-trash" title="Delete Model" onclick="deleteModel('<%=model.getName%>')">Delete</button>
+							<% end %>
+						</td>
+					</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+		<% else %>
+		<div class="text-center">YOU DON'T HAVE ANY MODEL</div>
+		<% end %>
+		
+	</div>
+</div>
+
+
+
+<%
+=begin
+<p class="ident-bot-12">
+<a class="button-2" href="/yuri/models/create">Create a Model</a>
+<% if @models.length > 0 %>
+	<table style="width: 100%">
+	<tr>
+	<% i = 1 %>
+	<% @models.each do |model| %>
+			<td valign="top" style="border-top: 1px dashed #ccc; padding-right: 20px; padding-top: 10px">
+			<div style="min-height: 150px; vertical-align: top">
+			<h2 style="display: inline-block"><%=model.getClassName %></h2>
+			<span class="dropdown" style="display: inline-block">
+				<button class="btn" data-toggle="dropdown"><i class="caret"></i></button>
+				<ul class="dropdown-menu">
+					<% if model.isActiveRecordModel %>
+					<li><a href="/yuri/models/relationships?model=<%=model.getName %>"><i class="icon-refresh"></i> Relationships</a></li>
+					<!--<li><a href="/yuri/models/validations?model=<%=model.getName %>"><i class="icon-ok"></i> Validations</a></li>-->
+                    <li class="divider"></li>
+                    <!--<li><a href="/yuri/models/raw_edit?model=<%=model.getName %>"><i class="icon-pencil"></i> Edit Model</a></li>-->
+					<!--<li class="divider"></li>-->
+					<li><a href="/yuri/models/edit/<%=model.getName %>"><i class="icon-pencil"></i> Edit Model</a></li>
+					<% end %>
+					<li><a href="javascript:;" onclick="DeleteModel('<%=model.getName %>')"><i class="icon-trash"></i> Delete Model</a></li>
+				</ul>
+			</span>
+			<% if model.isActiveRecordModel %>
+			<p style="margin-top: 10px;">
+			<table class="special" style="width: 100%; ">
+				<tr>
+					<th>Table Name</th>
+					<td class="center"><%=model.getTableName %></td>
+				</tr>
+				<% unless model.getConnection.empty? %>
+				<tr>
+					<th>Connection</th>
+					<td class="center"><%=model.getConnection %></td>
+				</tr>
+				<% end %>
+				<% @relationships.each do |relation| %>
+				
+				<% relations = model.getRelations(relation) %>
+
+				<% if relations.length > 0 %>
+					<tr>
+						<th><%=relation.to_s.gsub('_', ' ').capitalize %></th>
+						<td>
+							<table style="">
+							<% relations.each do |xrelation| %>
+								<tr>
+									<td style=" border: none; padding: 0px 0 0 5px; border-bottom: none"><%=xrelation.name.capitalize %></td>
+								</tr>
+							<% end %>
+							</table>
+							
+						</td>
+					</tr>
+				<% end %>
+				<% end %>
+			</table>
+			</p>
+			<% end %>
+			</div><br />
+			</td>
+		<% if i % 3 == 0 %>
+			</tr><tr>
+		<% end %>
+		<% i += 1 %>
+	<% end %>
+	</tr>
+	</table>
+<% else %>
+	<p class="center"><i>You don't have any model</i></p>
+<% end %>
+</p>
+
+<%
+=end
+%>

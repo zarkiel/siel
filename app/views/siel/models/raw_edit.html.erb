@@ -1,0 +1,58 @@
+<% content_for(:econtent) do %>
+<script>
+var editor;
+$(function(){
+    editor = ace.edit("editor");
+    editor.setTheme("ace/theme/chrome");
+    editor.getSession().setMode("ace/mode/ruby");
+    
+	$('#fca').validate({
+		submitHandler: function(f){
+            $('input[name="content"]').val(editor.getValue());
+			$.post('/yuri/models/raw_edit',$(f).serialize(),function(r){
+				switch(parseInt(r[0])){
+					case 1:
+						jAlert('Model successfully edited',function(){
+							window.location = '/yuri/models';
+						});
+					break;
+					
+					case 0:
+						jAlert('Sorry, We can\'t edit the model.');
+					break;
+				}
+			},'json');
+		}
+	});
+    
+    
+    
+    editor.commands.addCommand({
+        name: 'myCommand',
+        bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
+        exec: function(editor) {
+            $('#fca').trigger('submit');
+        },
+        readOnly: true // false if this command should not apply in readOnly mode
+    });
+});
+</script>
+<style>
+#editor { 
+    height: 500px;
+}
+</style>
+<div class="row-fluid">
+	<h2 class="ident-bot-18">Edit Model</h2>
+	<div class="span12">
+		<form id="fca" class="form form-horizontal">
+            <pre id="editor"><%=@model.getContent %></pre>
+            <div class="btns"><button type="reset" class="button-2" data-type="reset">Clear</button>
+			<button type="submit" class="button-2" data-type="submit">Edit Model</button></div>
+            <input type="hidden" name="content" />
+            <input type="hidden" name="name" value="<%=@model.getName %>" />
+			<input type="hidden" name="model" value="<%=@model.serialize %>" />
+		</form>
+	</div>
+</div>
+<% end %>

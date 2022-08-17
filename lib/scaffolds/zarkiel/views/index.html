@@ -1,0 +1,45 @@
+<script>
+$(function(){
+	zkTable('l<%=all_var%>');
+});
+
+function borrar_<%=model_var%>(id){
+	__borrar('/<%=all_var%>/borrar', id, function(){
+		zk.load('/<%=all_var%>');
+	});
+}
+
+zk.setTopMenu([
+	{title: 'Registrar <%=model_name %>', icon: 'register', onClick: function(){ fancybox('/<%=all_var %>/registrar') }}
+]);
+
+</script>
+
+<div class="block">
+	<h2><%=all_var.titleize%></h2>
+	<!--<p><button class="btn" onclick="fancybox('/<%=all_var %>/registrar');"><%='<' %>%=icon('register') %> Registrar <%=model_name %></button></p>-->
+	<table id="l<%=all_var%>" class="display">
+		<thead>
+			<tr><% object.attributes.each do |key, val| %><% if key != 'id' %>
+				<th><%=key.upcase %></th><% end %><% end %>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+		<%='<' %>% @<%=all_var%>.each do |<%=model_var %>| %><tr><% object.attributes.each do |key, val| next if key == 'id' %>
+				<td><%='<' %>%=<%=model_var %>.<%=key %>%></td><% end %>
+				<td class="center" style="width: 120px">
+					<span class="dropup">
+						<button class="btn" data-toggle="dropdown">Opciones <i class="caret"></i></button>
+						<ul class="dropdown-menu pull-right">
+							<li><a href="javascript:;" onclick="fancybox('/<%=all_var %>/editar/<%='<' %>%=<%=model_var %>.id %>')"><%='<' %>%=icon('edit') %> Editar <%=model_name %></a></li>
+							<li><a href="javascript:;" onclick="borrar_<%=model_var%>('<%='<' %>%=<%=model_var %>.id %>')"><%='<' %>%=icon('delete') %> Borrar <%=model_name %></a></li>
+						</ul>
+					</span>
+				</td>
+			</tr>
+		<%='<' %>% end %<%='>' %>
+		</tbody>
+	</table>
+</div>
+

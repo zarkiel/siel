@@ -1,0 +1,125 @@
+
+<script>
+$(function(){
+	$('#formCreateMigration').niftyOverlay();
+	$('#formCreateMigration').submit(function(e){
+        e.preventDefault();
+        $(this).sendForm('/siel/migrations/create', function(r){
+            //$(_form).data('bootstrapValidator').disableSubmitButtons(false);
+            switch(parseInt(r[0])){
+                case 1:
+                    //$.fancybox.close();
+                    zk.pageAlert({message: 'Migration created successfully!', title: 'Success', icon: 'check', type: 'success'});
+                    zk.goToUrl('/migrations');
+                    //zk.reloadPage();
+                break;
+                
+                case 0:
+                    zk.pageAlert({message: 'Sorry we can\'t complete the request.', title: 'Request Failed', icon: 'bolt', type: 'danger'});
+                break;
+                
+                case -1:
+                    zk.pageAlert({message: 'Please insert a valid name.', title: 'Request Failed', icon: 'bolt', type: 'danger'});
+                break;
+            }
+        });
+    });
+	$('#migration_action').bind('change', function(){
+		readonly = $(this).val() == 'remove' ? true : false; 
+		console.log(readonly)
+		$('.field_type').attr('disabled', readonly);
+		$('.field_modifiers').attr('disabled', readonly);
+	});
+	
+	$('.managing_fields').hide();
+});
+var fieldTypes = ['binary', 'boolean', 'date', 'datetime', 'decimal', 'float', 'integer', 'primary_key', 'references', 'string', 'text', 'time', 'timestamp'];
+/*
+	PGSQL TYPES - NOT YET AVAILABLE
+
+	:hstore
+	:array
+	:cidr_address
+	:ip_address
+	:mac_address
+*/
+
+
+function addField(){
+	field = '<tr class="form-group-sm">';
+	field += '<td class="center"><input type="text" name="field_name[]" class="field_name form-control" placeholder="Name" required /></td>';
+	
+	field += '<td class="center"><select name="field_type[]" class="field_type form-control">';
+	for(i in fieldTypes){
+		field += '<option value="'+ fieldTypes[i] +'">'+ fieldTypes[i] +'</option>';
+	}
+	field += '</select></td>';
+	
+	field += '<td class="center"><input type="text" class="field_modifiers form-control" name="field_modifiers[]" placeholder="Attributes" /></td>';
+	
+	field += '<td class="center"><button class="btn btn-danger fa fa-icon fa-trash" onclick="$(this).parent().parent().remove()" type="button"></button></td>';
+	field += '</tr>';
+	
+	$('#fieldList').append(field);
+	$('#migration_action').trigger('change');
+}
+
+function setManagingFields(sender){
+	if(!$(sender).hasClass('active')) return $('.managing_fields').show();
+	return $('.managing_fields').hide()
+}
+</script>
+
+
+<div class="modal-content">
+    <form action="" class="form-horizontal" id="formCreateMigration" data-target="#formCreateMigration" data-toggle="overlay">
+        <div class="modal-header">
+            <h4 class="modal-title">Create Migration</h4>
+        </div>
+        <div class="modal-body">
+        	<div class="form-group form-group-sm">
+        	    <label class="col-sm-4 control-label" for="">Name</label>
+        	    <div class="col-sm-4 col-lg-2">
+        	    	<input type="text" name="name" class="form-control" required />
+        	    </div>
+        	    <div class="col-sm-4 col-lg-2">
+        	    	<button class="btn btn-default" type="button" onclick="setManagingFields(this)" data-toggle="button">Manage Fields</button>
+        	    </div>
+        	</div>
+
+        	<div class="form-group form-group-sm managing_fields">
+        	    <label class="col-sm-4 control-label" for="">Action</label>
+        	    <div class="col-sm-4 col-lg-2">
+        	    	<select name="migration_action" class="form-control" id="migration_action">
+						<option value="create">Create</option>
+						<option value="add">Add</option>
+						<option value="remove">Remove</option>
+					</select>
+        	    </div>
+        	</div>
+
+        	<div class="form-group form-group-sm">
+        	    <label class="col-sm-4 control-label" for="">Table Name</label>
+        	    <div class="col-sm-4 col-lg-2"><input type="text" name="table_name" id="table_name" class="form-control" required /></div>
+        	</div>
+
+			<table class="special managing_fields" style="margin-bottom: 20px">
+				<tr>
+					<th colspan="3">Fields</th>
+					<th style="width: 60px" class="center"><button class="btn btn-default fa fa-icon fa-plus" type="button" onclick="addField()"></button></th>
+				</tr>
+				<tbody id="fieldList">
+					
+				</tbody>
+			</table>
+         
+     
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn btn-default" data-dismiss="modal" type="button" onclick="window.history.back(-1)">Cancel</button>
+            <button class="btn btn-primary" type="submit">Create Migration</button>
+        </div>
+    </form>
+</div>
+

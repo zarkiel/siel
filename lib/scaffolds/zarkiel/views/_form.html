@@ -1,0 +1,42 @@
+<script>
+$(function(){
+	$('#f<%=model_var%>').validate({
+		rules: $form.validations,
+		messages: $form.messages,
+		submitHandler: function(f){
+			sendForm($form.requestUrl, $(f).serialize(), function(r){
+				switch(parseInt(r[0])){
+					case 1:
+						if($form.success){
+							$form.success(r);
+						}
+					break;
+					
+					case 0:
+						if($form.failed){
+							$form.failed(r);
+						}
+					break;
+					
+					case -5:
+						zk.formErrors(f, r.errors);
+					break;
+					
+					default:
+						if($form.undefined){
+							$form.undefined(r);
+						}
+					break;
+				}
+			});
+		}
+	});
+});
+</script>
+<form id="f<%=model_var%>" class="form form-horizontal"><% object.attributes.each do |key, val| %>
+	<% if key == 'id' %><%='<' %>%=@form.<%=key%> %<%='>' %><% else %><%='<' %>%=@form.<%=key%>.full %<%='>' %><% end %><% end %>
+	<div class="form-actions">
+		<button class="btn btn-primary">Guardar Datos</button>
+		<button class="btn" type="button" onclick="$form.getBack() ">Cancelar</button>
+	</div>
+</form>

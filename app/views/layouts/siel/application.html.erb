@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<%= csrf_meta_tags %>
+
+	<title>Siel - Rails Project Admin</title>
+
+
+	<!--STYLESHEET-->
+	<!--=================================================-->
+
+	<!--Open Sans Font [ OPTIONAL ] -->
+ 	<link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;subset=latin" rel="stylesheet">
+
+	<!--Bootstrap Stylesheet [ REQUIRED ]-->
+	<link href="/assets/siel/bootstrap.min.css" rel="stylesheet">
+
+
+	<!--Nifty Stylesheet [ REQUIRED ]-->
+	<link href="/assets/siel/nifty.min.css" rel="stylesheet">
+
+	
+	<!--Font Awesome [ OPTIONAL ]-->
+	<link href="/assets/siel/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+
+
+	<link href="/assets/siel/main.min.css" rel="stylesheet">
+
+	<!--SCRIPT-->
+	<!--=================================================-->
+
+	<script src="/assets/siel/jquery-2.1.1.min.js"></script>
+	
+	
+</head>
+
+<!--TIPS-->
+<!--You may remove all ID or Class names which contain "main-", they are only used for demonstration. -->
+
+<body class="nifty-ready">
+	
+
+	<div id="container" class="effect mainnav-lg">
+		
+		<!--NAVBAR-->
+		<!--===================================================-->
+		<header id="navbar">
+			<div id="navbar-container" class="boxed">
+
+				<!--Brand logo & name-->
+				<!--================================-->
+				<div class="navbar-header">
+					<a href="/siel" class="navbar-brand">
+						
+						<div class="brand-title">
+							<span class="brand-text">SIEL - Project Admin</span>
+						</div>
+					</a>
+				</div>
+				<!--================================-->
+				<!--End brand logo & name-->
+
+
+				<!--Navbar Dropdown-->
+				<!--================================-->
+				<div class="navbar-content clearfix">
+					<ul class="nav navbar-top-links pull-left">
+
+						<!--Navigation toogle button-->
+						<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+						<li class="tgl-menu-btn">
+							<a class="mainnav-toggle" href="#">
+								<i class="fa fa-navicon fa-lg"></i>
+							</a>
+						</li>
+						<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+						<!--End Navigation toogle button-->
+
+
+				
+						
+
+					</ul>
+					<ul class="nav navbar-top-links pull-right">
+						
+	
+
+					</ul>
+				</div>
+				<!--================================-->
+				<!--End Navbar Dropdown-->
+
+			</div>
+		</header>
+		<!--===================================================-->
+		<!--END NAVBAR-->
+
+		<div class="boxed">
+
+			<!--CONTENT CONTAINER-->
+			<!--===================================================-->
+			<div id="content-container">
+				
+				<!--Page Title-->
+				<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+				<!--
+				<div id="page-title">
+					<h1 class="page-header text-overflow">Alumnos</h1>
+					<div class="searchbox">
+						<div class="input-group custom-search-form">
+							<input type="text" class="form-control" placeholder="Search..">
+							<span class="input-group-btn">
+								<button class="text-muted" type="button"><i class="fa fa-search"></i></button>
+							</span>
+						</div>
+					</div>
+				</div>
+				-->
+				<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+				<!--End page title-->
+	
+
+				<!--Page content-->
+				<!--===================================================-->
+				<div id="page-content" data-toggle="panel-overlay" data-target='#page-content'>
+					
+					<%=yield%>
+
+				</div>
+				<!--===================================================-->
+				<!--End page content-->
+
+
+			</div>
+			<!--===================================================-->
+			<!--END CONTENT CONTAINER-->
+
+
+			
+			<!--MAIN NAVIGATION-->
+			<!--===================================================-->
+			<nav id="mainnav-container">
+				<div id="mainnav">
+					<!--
+					<div id="mainnav-shortcut">
+						<ul class="list-unstyled">
+							<li class="col-xs-4" data-content="Additional Sidebar" data-original-title="" title="">
+								<a id="demo-toggle-aside" class="shortcut-grid" href="#">
+									<i class="fa fa-magic"></i>
+								</a>
+							</li>
+							<li class="col-xs-4" data-content="Notification" data-original-title="" title="">
+								<a id="demo-alert" class="shortcut-grid" href="#">
+									<i class="fa fa-bullhorn"></i>
+								</a>
+							</li>
+							<li class="col-xs-4" data-content="Page Alerts" data-original-title="" title="">
+								<a id="demo-page-alert" class="shortcut-grid" href="#">
+									<i class="fa fa-bell"></i>
+								</a>
+							</li>
+						</ul>
+					</div>
+					-->
+					<!--Menu-->
+					<!--================================-->
+					<div id="mainnav-menu-wrap">
+						<div class="nano">
+							<div class="nano-content">
+
+								<ul id="mainnav-menu" class="list-group">
+									
+
+									<!--Category name-->
+									<li class="list-header">Navegación</li>
+						
+									
+									<li>
+										<a href="/siel">
+											<i class="fa fa-home"></i>
+											<span class="menu-title">
+												<strong>Home</strong>
+											</span>
+										</a>
+									</li>
+
+									<li>
+										<a href="/siel/environment">
+											<i class="fa fa-laptop"></i>
+											<span class="menu-title">
+												<strong>Environment</strong>
+											</span>
+										</a>
+									</li>
+									
+									<li>
+										<a href="/siel/controllers">
+											<i class="fa fa-file-code-o"></i>
+											<span class="menu-title">
+												<strong>Controllers</strong>
+											</span>
+										</a>
+									</li>
+
+									<li>
+										<a href="/siel/models">
+											<i class="fa fa-group"></i>
+											<span class="menu-title">
+												<strong>Models</strong>
+											</span>
+										</a>
+									</li>
+
+									<li>
+										<a href="/siel/migrations">
+											<i class="fa fa-database"></i>
+											<span class="menu-title">
+												<strong>Migrations</strong>
+											</span>
+										</a>
+									</li>
+								</ul>
+
+
+							</div>
+						</div>
+					</div>
+					<!--================================-->
+					<!--End menu-->
+
+				</div>
+			</nav>
+			<!--===================================================-->
+			<!--END MAIN NAVIGATION-->
+
+
+		</div>
+
+		
+
+		<!-- FOOTER -->
+		<!--===================================================-->
+		<footer id="footer">
+
+			<!-- Visible when footer positions are static -->
+			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+			<div class="hide-fixed pull-right pad-rgt">Currently v1.0</div>
+
+
+
+			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+			<!-- Remove the class name "show-fixed" and "hide-fixed" to make the content always appears. -->
+			<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+			<p class="pad-lft">&#0169; 2015 Siel - Rails Project Admin</p>
+
+
+
+		</footer>
+		<!--===================================================-->
+		<!-- END FOOTER -->
+
+
+		<!-- SCROLL TOP BUTTON -->
+		<!--===================================================-->
+		<button id="scroll-top" class="btn"><i class="fa fa-chevron-up"></i></button>
+		<!--===================================================-->
+
+
+	
+	</div>
+	<!--===================================================-->
+	<!-- END OF CONTAINER -->
+
+	<!--JAVASCRIPT-->
+	<!--=================================================-->
+	<!--jQuery [ REQUIRED ]-->
+	
+	<script>
+	var token = $("meta[name='csrf-token']").attr("content");
+	$(document).ajaxSend(function(e, xhr, options) {
+		xhr.setRequestHeader("X-CSRF-Token", token);
+	});
+	</script>
+
+	<!--BootstrapJS [ RECOMMENDED ]-->
+	<script src="/assets/siel/bootstrap.min.js"></script>
+
+	<!--Nifty Admin [ RECOMMENDED ]-->
+	<script src="/assets/siel/nifty.min.js"></script>
+
+	
+	<script src="/assets/siel/underscore-min.js"></script>
+	<script src="/assets/siel/backbone-min.js"></script>
+	<script src="/assets/siel/main.min.js"></script>
+
+	
+
+
+</body>
+</html>
+

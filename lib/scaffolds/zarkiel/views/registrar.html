@@ -1,0 +1,35 @@
+<script>
+var $form = {
+	
+	requestUrl: '/<%=all_var %>/save',
+	
+	// response => 1
+	
+	success: function (r){
+		jAlert('Datos registrados correctamente',function(){
+			$form.getBack();
+			zk.load('/<%=all_var %>');
+		});
+	},
+	
+	// response => 0
+	
+	failed: function(r){
+		jAlert('No se pudieron registrar los datos');
+	},
+	
+	// undefined response
+	
+	undefined: function(r){
+		
+	},
+	
+	getBack: function(){
+		$.fancybox.close();
+	}
+}
+</script>
+<div class="block">
+	<h2>Registrar <%=model_name.capitalize %></h2>
+	<%='<' %>%=render :file => '<%=all_var %>/_form' %<%='>' %>
+</div>
