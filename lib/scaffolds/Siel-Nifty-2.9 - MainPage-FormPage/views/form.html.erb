@@ -1,0 +1,82 @@
+<script>
+$(function(){
+	$('#form<%=model_var.titleize.gsub(/ +/, "")%>').niftyOverlay();
+	$('#form<%=model_var.titleize.gsub(/ +/, "")%>').bootstrapValidator({
+		fields: {
+		
+		},
+		onSuccess: function(e){
+			e.preventDefault();
+			_form = e.target;
+			$('button[type="submit"]').attr('disabled', false);
+			
+			$(_form).sendForm('/<%=all_var%>/save', function(r){
+				
+
+				switch(r.code){
+					case 1:
+						zk.pageAlert({message: 'Datos guardados correctamente', title: 'Operación Exitosa', icon: 'check', type: 'success', container: 'floating'});
+						zk.goToUrl('/<%=all_var%>')
+					break;
+					
+					case 0:
+						zk.pageAlert({message: 'No se pudieron guardar los datos', title: 'Operación Fallida', icon: 'bolt', type: 'danger', container: 'floating'});
+					break;
+					
+					case -5:
+						for(i in r.errors){
+							$(_form).data('bootstrapValidator').updateStatus("<%=model_var%>[" + i + "]", 'INVALID');
+							zk.pageAlert({message: r.errors[i][0], title: 'Validación Fallida', icon: 'bolt', type: 'danger', container: 'floating', timer: 0});
+						}
+					break;
+					
+					default:
+						
+					break;
+				}
+			});
+		}
+	});
+});
+</script>
+
+<div id="page-head">
+	<div id="page-title">
+		<h1 class="page-header text-overflow">Registro de <%=model_var.titleize%></h1>
+	</div>
+	<ol class="breadcrumb">
+		<li><a href="/"><i class="demo-pli-home"></i></a></li>
+		<li><a href="javascript:;" onclick="history.back(-1)"><%=all_var.titleize%></a></li>
+		<li class="active">Registro de <%=model_var.titleize%></li>
+	</ol>
+</div>
+
+<div id="page-content">
+	<%='<' %>%= form_with model: @<%=model_var%>, url: '', method: 'POST', id: 'form<%=model_var.titleize.gsub(/ +/, "")%>', class: 'form-horizontal', html: {autocomplete: "off"}, data: {"target" => "#form<%=model_var.titleize.gsub(/ +/, "")%>", "toggle" => "overlay"} do |f| %>
+	<div class="panel">
+		<div class="panel-heading">
+			<h3 class="panel-title"><%='<' %>%=@<%=model_var%>.new_record? ? 'Registrar' : 'Editar'%> <%=model_var.titleize%></h3>
+		</div>
+
+		<div class="panel-body">
+			
+			<%='<' %>%=f.hidden_field :id, value: @<%=model_var%>.new_record? ? '' : sha1(@<%=model_var%>.id) %>
+			<% object.attributes.each do |key, val| next if ['id', 'created_at', 'updated_at'].include? key %>
+			<div class="form-group">
+				<label class="col-sm-4 control-label" for=""><%=key.titleize%> <small class="text-danger">*</small></label>
+				<div class="col-sm-6">
+					<%='<' %>%=f.text_field :<%=key%>, class: 'form-control', required: true %>
+				</div>
+			</div>
+			<% end %>
+			
+		</div>
+
+		<div class="modal-footer">
+			<button class="btn btn-default" data-dismiss="modal" type="button" onclick="history.back(-1)">Cancelar</button>
+			<button class="btn btn-primary" type="submit">Guardar Datos</button>
+		</div>
+	</div>
+	<%='<' %>% end %<%='>' %>
+</div>
+			
