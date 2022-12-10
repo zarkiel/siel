@@ -1,9 +1,9 @@
-# Yuri #
+# Siel #
 
 [@zarkiel](https://github.com/zarkiel) - Zarkiel
 ### Introduction ###
 
-> Yuri is a web environment that allows to you manage your project from the easy way
+> Siel is a web environment that allows to you manage your project from the easy way
 
 ### Minimum Requirements ###
 
@@ -12,11 +12,11 @@
 ### Installation ##
 You can install the gem from rubygems by using the next command:
 ```bash
-gem install yuri
+gem install siel
 ```
 Or simply add the gem in your gemfile
 ```bash
-gem 'yuri'
+gem 'siel'
 ```
 and run
 ```bash
@@ -26,7 +26,7 @@ bundle install
 ### Usage ###
 Once installed, add the following route to mount Yuri in your project.
 ```ruby
-mount Yuri::Engine, :at => '/yuri'
+mount Siel::Engine, :at => '/siel'
 ```
 Run your server and open the next url.
 ```bash
