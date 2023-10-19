@@ -1,0 +1,72 @@
+<script>
+$(function(){
+	$('#form<%=model_var.titleize.gsub(/ +/, "")%>').niftyOverlay();
+	$('#form<%=model_var.titleize.gsub(/ +/, "")%>').bootstrapValidator({
+		fields: {
+		
+		},
+		onSuccess: function(e){
+			e.preventDefault();
+			_form = e.target;
+			$('button[type="submit"]').attr('disabled', false);
+			
+			$(_form).sendForm('/<%=all_var%>/save', function(r){
+				
+
+				switch(r.code){
+					case 1:
+						$.fancybox.close()
+						zk.pageAlert({message: 'Datos guardados correctamente', title: 'Operación Exitosa', icon: 'check', type: 'success', container: 'floating'});
+						grid<%=all_var.titleize.gsub(/ +/, "")%>.api.refreshServerSide();
+					break;
+					
+					case 0:
+						zk.pageAlert({message: 'No se pudieron guardar los datos', title: 'Operación Fallida', icon: 'bolt', type: 'danger', container: 'floating'});
+					break;
+					
+					case -5:
+						for(i in r.errors){
+							$(_form).data('bootstrapValidator').addField("<%=model_var%>[" + i + "]");
+							$(_form).data('bootstrapValidator').updateStatus("<%=model_var%>[" + i + "]", 'INVALID');
+							zk.pageAlert({message: r.errors[i][0], title: 'Validación Fallida', icon: 'bolt', type: 'danger', container: 'floating', timer: 0});
+						}
+					break;
+					
+					default:
+						
+					break;
+				}
+			});
+		}
+	});
+});
+</script>
+<div class="">
+	<%='<' %>%= form_with model: @<%=model_var%>, url: '', method: 'POST', id: 'form<%=model_var.titleize.gsub(/ +/, "")%>', class: 'form-horizontal', html: {autocomplete: "off"}, data: {"target" => "#form<%=model_var.titleize.gsub(/ +/, "")%>", "toggle" => "overlay"} do |f| %>
+	<div class="modal-content">
+		<div class="modal-header">
+			<h3 class="modal-title"><%='<' %>%=@<%=model_var%>.new_record? ? 'Registrar' : 'Editar'%> <%=model_var.titleize%></h3>
+		</div>
+
+		<div class="modal-body">
+			
+			<%='<' %>%=f.hidden_field :id, value: @<%=model_var%>.new_record? ? '' : sha1(@<%=model_var%>.id) %>
+			<% object.attributes.each do |key, val| next if ['id', 'created_at', 'updated_at'].include? key %>
+			<div class="form-group">
+				<label class="col-sm-4 control-label" for=""><%=key.titleize%> <small class="text-danger">*</small></label>
+				<div class="col-sm-6">
+					<%='<' %>%=f.text_field :<%=key%>, class: 'form-control', required: true %>
+				</div>
+			</div>
+			<% end %>
+			
+		</div>
+
+		<div class="modal-footer">
+			<button class="btn btn-default" data-dismiss="modal" type="button" onclick="$.fancybox.close()">Cancelar</button>
+			<button class="btn btn-primary" type="submit">Guardar Datos</button>
+		</div>
+	</div>
+	<%='<' %>% end %<%='>' %>
+</div>
+			
