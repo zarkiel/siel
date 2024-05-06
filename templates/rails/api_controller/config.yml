@@ -1,3 +1,0 @@
-files:
-  - source: "controller.rb"
-    destination: "app/controllers/${controller_name}_controller.rb"
