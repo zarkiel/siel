@@ -1,0 +1,10 @@
+#!/usr/bin/ruby
+require File.expand_path("lib/generators/default_generator", File.dirname(__FILE__))
+require File.expand_path("lib/generators/rails", File.dirname(__FILE__))
+
+case ARGV[0]
+    when "rails"
+        generator = Siel::Generators::RailsGenerator.new
+end
+
+generator.execute_command
